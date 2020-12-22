@@ -1,0 +1,776 @@
+package com.sample
+import org.kie.api.runtime.KieRuntime
+global JFrame frame
+import javax.swing.*;
+import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+
+declare enum Music
+	Ra("RAP"), Ro("ROCK");
+	fullName : String;
+end
+
+declare TypeOfMusic
+	typeOfMusic : Music;
+end
+
+declare enum GeneralAnswer
+	RhOCool("Cool, but that's, basically just rock music!"), GYBELove("I love those buildups! I could try some electronic music that does that."),
+	GYBEHandle("I think I could handle that, but way more minimal."), GYBELike("I like the post-rock song structure and scale."),
+	FBTarrot("More, quieter though."), NjSionVocal("More of vocal focus."), NjSionBusy("This is much to busy and melodius for my tastes."), 
+	DPLike("I like this. We can lose the guitars and stuff now. I'm ready."), DPBad("Where can I go from here?"),
+	DPElec("More of the same, but I think I'm ready for electronic music now."), TkSVocals("Take out the vocals. Focus it."), 
+	TkSWeird("Too weird!"), RhKCool("Cool, but I'm not quite ready to lose the guitars quite yet!"), 
+	RhKWeird("Weird, but good! Maybe more electronic, but I still want vocals"), RhKElec("Even this is too much electronic for me"), 
+	RhKDrums("I actually liked the drums and bleeps they had going on. More of that."),
+	AAmber("Cool, I guess electronic music isn't just talentless button pushing. More like this"), KDPMdrums("I like the glitchy drums"), 
+	KDPMambient("I like the more ambient parts"), NNElec("This, but electronic"),NNMoreElec("More electronic influence"), 
+	ManuelG("Fully electronic now."), BBSLush("I need more of these lush, organic sounds."), BBSChill("Chill it out."), 
+	TDive("Make it stranger. I want to listen to an educational film from eighties"), BoCMusic("I want something more 'electric' feeling."), 
+	APDRecent("That sounds dated. Somethng more recent?"), APDWilder("These complex beats are awesome. Can they get wilder?"), 
+	APDSteady("Let's get a steady beat on that."), APDNodrums("I can't wrap my head around these drums, but I like the rest of it. No drums."), 
+	KST("Let's get a steady beat on that."), TDPAmbient("More Ambient Stuff."), TDPShorter("This style of synths, but shorter songs and carelessly happy."),
+	KSTDrums("More drums"), KNice("Give me some nice hip-hop beats"), KREAL("Come on, I want REAL rap music"), NMMStranger("Stranger! Wonkier!"),
+	NMMLush("I need more of these lush, organic sounds."), TiMMMLike("I like those beats. What if they were a bit more spaced out?"),
+	TiMMMClassics("I can deal with the weird parts. I think I'm ready for classics."), TiMMMStranger("Even stranger! Even wonkier!"),
+	TiMMMBeats("Keep the beats, but make it dark and operatic."), FLC("I want this, but in a jungle."), 
+	Orb("Something a little bit less ambient maybe."), GC("Even more ambient"), BEnoBusy("This album is to busy for me"),
+	BEnoMix("Mix with Orbital - Brown Album"), GTalk("Whoa, sampling is cool, more like this!"), 
+	BUHappier("Happier, Lighter, Focus on the beats, not the vocals."), BUDark("Drop the samples, keep the nice beats and dark atmosphere."),
+	LGGLess("Rainforest music, but sligthly less crazy."), LGGLove("I loved the strange vocals taht a few of the tracks had. And the drums."),
+	TFSoLL("I think I'm ready for some ambient now"), TFSoLAMore("More!"), TFSoLADrugs("I want to feel like I'm on drugs."),
+	TFSoLADrums("Focus on fast, hard hitting drums."), OBALike("I liked Halycon + On + ON"), OBALikeDance("I don't ever want to stop dancing"), 
+	OBALess("Less melody, more subtle."), OBAMix("Mix with Brain Eno - 'Ambient 2: The Plateaux of Mirror'"), 
+	JHIPiano("I liked the piano, but not the heavy parts."), JHIBeats("I liked the heavier bits, Collider for example."), 
+	DSE("I'm liking these instrumental beats. More please."),TAvalanchesSampling("More sampling, with a hip-hop vibe to it."), 
+	TAvalanchesDarker("Darker. Sadder. The samples could be messed with a little more."), MAM("I liked the feel of Burial a little better."), 
+	MR("Those drums 10, times louder. 10, times crazier."), SpongleFrozen("This but I want to feel like I'm exploring frozen wasteland"),
+	SpongleLike("I like this careless, fun music I can kind of dance to. Give me a big, essential, diverse collection of it."),
+	SpongleDrums("Focus on fast, hard hitting drums."), DPDFun("Fun stuff, but could it get a little more... Tribal?"), 
+	DPDDance("I don't ever want to stop dancing."), DPDDirtier("DIRTIER."),
+	DPDCareless("I like this careless, fun music I can kind of dance to. Give me a big, essential, diverse collection of it."),
+	VSRCAS("Calm down those drums. I like the orchestral samples though."), Goldie("This, but I want to fell like I'm exploring a frozen wasteland");
+	fullName : String;
+end
+
+declare Answer
+	answer : GeneralAnswer;
+end
+
+rule "ROCK or RAP?"
+    when
+    then
+    TypeOfMusic t = new TypeOfMusic();
+    t.setTypeOfMusic(Music.Ro);
+    ArrayList<String> options = new ArrayList<>();
+    options.add(t.getTypeOfMusic().getFullName());
+    t.setTypeOfMusic(Music.Ra);
+    options.add(t.getTypeOfMusic().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "ROCK or RAP?", options);
+    insert (ask);
+end
+
+rule "Radiohead - OK computer"
+    when
+    Ask(question == "ROCK or RAP?" && answer == Music.Ro.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.RhOCool);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Radiohead - OK computer", options);
+    insert(ask);
+end
+
+
+rule "Radiohead - Kid A"
+    when
+    Ask(question == "Radiohead - OK computer" && answer == GeneralAnswer.RhOCool.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.RhKCool);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.RhKWeird);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.RhKElec);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.RhKDrums);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Radiohead - Kid A", options);
+    insert (ask);
+end
+
+rule "The knife - Silent shout"
+    when
+    Ask(question == "Radiohead - Kid A" && answer == GeneralAnswer.RhKWeird.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TkSWeird);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TkSVocals);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "The knife - Silent Shout", options);
+    insert (ask);
+end
+
+
+rule "Darkside - Psychic"
+    when
+    Ask(question == "Radiohead - Kid A" && answer == GeneralAnswer.RhKCool.getFullName()) || 
+    Ask(question == "The knife - Silent Shout" && answer == GeneralAnswer.TkSWeird.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.DPLike);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.DPBad);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.DPElec);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Darkside - Psychic", options);
+    insert (ask);
+end
+
+
+rule "Nicolas Jarr - Space is only noise"
+    when
+    Ask(question == "Darkside - Psychic" && answer == GeneralAnswer.DPElec.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.NjSionVocal);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.NjSionBusy);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Nicolas Jarr - Space is only noise", options);
+    insert (ask);
+end
+
+rule "Villalobos - Alcachofa"
+    when
+    Ask(question == "Nicolas Jarr - Space is only noise" && answer == GeneralAnswer.NjSionBusy.getFullName()) ||
+    Ask(question == "Orbital - Brown Album" && answer == GeneralAnswer.OBALess.getFullName())
+    then
+    recommended(frame, kcontext.getKieRuntime(), "Villalobos - Alcachofa");
+end
+
+rule "James Blake - James Blake"
+    when
+    Ask(question == "Nicolas Jarr - Space is only noise" && answer == GeneralAnswer.NjSionVocal.getFullName()) || 
+    Ask(question == "Darkside - Psychic" && answer == GeneralAnswer.DPLike.getFullName()) ||
+    Ask(question == "Massive Attack - Mezzanine" && answer == GeneralAnswer.MAM.getFullName())
+    then
+    recommended(frame, kcontext.getKieRuntime(), "James Blake - James Blake");
+end
+
+rule "Bonobo - Black Sands"
+    when
+    Ask(question == "Darkside - Psychic" && answer == GeneralAnswer.DPBad.getFullName()) ||
+    Ask(question == "Nujabes - Metaphorical Music" && answer == GeneralAnswer.NMMLush.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.BBSChill);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.BBSLush);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Bonobo - Black Sands", options);
+    insert (ask);
+end
+
+rule "Tycho - Dive"
+    when
+    Ask(question == "Bonobo - Black Sands" && answer == GeneralAnswer.BBSChill.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TDive);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Tycho - Dive", options);
+    insert (ask);
+end
+
+rule "Boards of Canada - Music has the right to children"
+    when
+    Ask(question == "Tycho - Dive" && answer == GeneralAnswer.TDive.getFullName()) ||
+    Ask(question == "TOKiMONSTA - Midnight Menu" && answer == GeneralAnswer.TiMMMLike.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.BoCMusic);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Boards of Canada - Music has the right to children", options);
+    insert (ask);
+end
+
+rule "Aphex Twin - Selected Ambient Works"
+    when
+    Ask(question == "Boards of Canada - Music has the right to children" && answer == GeneralAnswer.BoCMusic.getFullName()) || 
+    Ask(question == "TOKiMONSTA - Midnight Menu" && answer == GeneralAnswer.TiMMMClassics.getFullName())
+    then
+    recommended(frame, kcontext.getKieRuntime(), "Aphex Twin - Selected Ambient Works");
+end
+
+rule "Godspeed You! Black Emperor - Lift Your Skinny Fists Like Antennas to Heaven"
+    when
+    Ask(question == "Radiohead - Kid A" && answer == GeneralAnswer.RhKElec.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.GYBELove);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.GYBEHandle);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.GYBELike);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Godspeed You! Black Emperor - Lift Your Skinny Fists Like Antennas to Heaven", options);
+    insert (ask);
+end
+
+rule "Fuck Buttons - Tarot Sport"
+    when
+    Ask(question == "Godspeed You! Black Emperor - Lift Your Skinny Fists Like Antennas to Heaven" && answer == GeneralAnswer.GYBELove.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.FBTarrot);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Fuck Buttons - Tarot Sport", options);
+    insert (ask);
+end
+
+rule "Autechre - Amber"
+    when
+    Ask(question == "Radiohead - Kid A" && answer == GeneralAnswer.RhKDrums.getFullName()) ||
+    Ask(question == "Kashiwa Daisuke - Program Music" && answer == GeneralAnswer.KDPMdrums.getFullName()) ||
+    Ask(question == "Klaus Schulze - Timewind" && answer == GeneralAnswer.KSTDrums.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.AAmber);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Autechre - Amber", options);
+    insert (ask);
+end
+
+rule "Kashiwa Daisuke - Program Music"
+    when
+    Ask(question == "Godspeed You! Black Emperor - Lift Your Skinny Fists Like Antennas to Heaven" && answer == GeneralAnswer.GYBELike.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.KDPMambient);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.KDPMdrums);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Kashiwa Daisuke - Program Music", options);
+    insert (ask);
+end
+
+rule "Neu! - Neu!"
+    when
+    Ask(question == "Godspeed You! Black Emperor - Lift Your Skinny Fists Like Antennas to Heaven" && answer == GeneralAnswer.GYBEHandle.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.NNElec);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.NNMoreElec);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Neu! - Neu!", options);
+    insert (ask);
+end
+
+rule "Manuel Gottsching - e2 - e4"
+    when
+    Ask(question == "Neu! - Neu!" && answer == GeneralAnswer.NNMoreElec.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.ManuelG);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Manuel Gottsching - e2 - e4", options);
+    insert (ask);
+end
+
+rule "Aphex Twin - Drukqs"
+    when
+    Ask(question == "Autechre - Amber" && answer == GeneralAnswer.AAmber.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.APDRecent);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.APDWilder);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.APDSteady);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.APDNodrums);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Aphex Twin - Drukqs", options);
+    insert (ask);
+end
+
+rule "Klaus Schulze - Timewind"
+    when
+    Ask(question == "Aphex Twin - Drukqs" && answer == GeneralAnswer.APDNodrums.getFullName()) ||
+    Ask(question == "Neu! - Neu!" && answer == GeneralAnswer.NNElec.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.KST);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.KSTDrums);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Klaus Schulze - Timewind", options);
+    insert (ask);
+end
+
+rule "Tangerine Dream - Phaedra"
+    when
+    Ask(question == "Kashiwa Daisuke - Program Music" && answer == GeneralAnswer.KDPMambient.getFullName()) ||
+    Ask(question == "Fuck Buttons - Tarot Sport" && answer == GeneralAnswer.FBTarrot.getFullName()) ||
+    Ask(question == "Manuel Gottsching - e2 - e4" && answer == GeneralAnswer.ManuelG.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TDPAmbient);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TDPShorter);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Tangerine Dream - Phaedra", options);
+    insert (ask);
+end
+
+rule "Mort Garrison - Plantasia"
+    when
+    Ask(question == "Tangerine Dream - Phaedra" && answer == GeneralAnswer.TDPShorter.getFullName())
+    then
+	recommended(frame, kcontext.getKieRuntime(), "Mort Garrison - Plantasia");
+end
+
+rule "Kanye West - 808s & Heartbreak"
+    when
+    Ask(question == "ROCK or RAP?" && answer == Music.Ra.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.KNice);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.KREAL);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Kanye West - 808s & Heartbreak", options);
+    insert (ask);
+end
+
+rule "Nujabes - Methaporical Music"
+    when
+    Ask(question == "Bonobo - Black Sands" && answer == GeneralAnswer.BBSLush.getFullName()) ||
+    Ask(question == "Kanye West - 808s & Heartbreak" && answer == GeneralAnswer.KNice.getFullName()) ||
+    Ask(question == "DJ Shadow - Endtroducing..." && answer == GeneralAnswer.DSE.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.NMMStranger);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.NMMLush);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Nujabes - Methaporical Music", options);
+    insert (ask);
+end
+
+rule "TOKiMONSTA - Midnight Menu"
+    when
+    Ask(question == "The knife - Silent Shout" && answer == GeneralAnswer.TkSVocals.getFullName()) ||
+    Ask(question == "Nujabes - Methaporical Music" && answer == GeneralAnswer.NMMStranger.getFullName()) ||
+    Ask(question == "Burial - Untrue" && answer == GeneralAnswer.BUHappier.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TiMMMClassics);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TiMMMStranger);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TiMMMLike);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TiMMMBeats);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "TOKiMONSTA - Midnight Menu", options);
+    insert (ask);
+end
+
+rule "Flying Lotus - Cosmogramma"
+    when
+    Ask(question == "Aphex Twin - Drukqs" && answer == GeneralAnswer.APDRecent.getFullName()) ||
+    Ask(question == "TOKiMONSTA - Midnight Menu" && answer == GeneralAnswer.TiMMMStranger.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.FLC);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Flying Lotus - Cosmogramma", options);
+    insert (ask);
+end
+
+rule "Orb - The Orb's Adventures Beyond the Ultraworld"
+    when
+    Ask(question == "Aphex Twin - Drukqs" && answer == GeneralAnswer.APDSteady.getFullName()) ||
+    Ask(question == "Klaus Schulze - Timewind" && answer == GeneralAnswer.KST.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.Orb);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Orb - The Orb's Adventures Beyond the Ultraworld", options);
+    insert (ask);
+end
+
+rule "Global Communication - 76:14"
+    when
+    Ask(question == "Tangerine Dream - Phaedra" && answer == GeneralAnswer.TDPAmbient.getFullName()) ||
+    Ask(question == "The Future Sound of London - Lifeforms" && answer == GeneralAnswer.TFSoLL.getFullName()) ||
+    Ask(question == "Orbital - Brown Album" && answer == GeneralAnswer.OBALike.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.GC);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Global Communication - 76:14", options);
+    insert (ask);
+end
+
+rule "Brian Eno - Ambient 2: The Plateaux of Mirror"
+    when
+    Ask(question == "Global Communication - 76:14" && answer == GeneralAnswer.GC.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.BEnoBusy);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.BEnoMix);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Brian Eno - Ambient 2: The Plateaux of Mirror", options);
+    insert (ask);
+end
+
+rule "Brian Eno - Ambient 1: Music for Airports"
+    when
+    Ask(question == "Brian Eno - Ambient 2: The Plateaux of Mirror" && answer == GeneralAnswer.BEnoBusy.getFullName())
+    then
+    recommended(frame, kcontext.getKieRuntime(), "Brian Eno - Ambient 1: Music for Airports");
+end
+
+rule "Girl Talk - Feed the Animals"
+    when
+    Ask(question == "Kanye West - 808s & Heartbreak" && answer == GeneralAnswer.KREAL.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.GTalk);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Girl Talk - Feed the Animals", options);
+    insert (ask);
+end
+
+rule "Burial - Untrue"
+    when
+    Ask(question == "TOKiMONSTA - Midnight Menu" && answer == GeneralAnswer.TiMMMBeats.getFullName()) ||
+    Ask(question == "The Avalanches - Since I Left You" && answer == GeneralAnswer.TAvalanchesDarker.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.BUHappier);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.BUDark);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Burial - Untrue", options);
+    insert (ask);
+end
+
+rule "Lone - Galaxy Garden"
+    when
+    Ask(question == "Flying Lotus - Cosmogramma" && answer == GeneralAnswer.FLC.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.LGGLove);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.LGGLess);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Lone - Galaxy Garden", options);
+    insert (ask);
+end
+
+rule "The Future Sound of London - Lifeforms"
+    when
+    Ask(question == "Lone - Galaxy Garden" && answer == GeneralAnswer.LGGLess.getFullName()) ||
+    Ask(question == "The Future Sound of London - Accelerator" && answer == GeneralAnswer.TFSoLAMore.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TFSoLL);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "The Future Sound of London - Lifeforms", options);
+    insert (ask);
+end
+
+rule "The Future Sound of London - Accelerator"
+    when
+    Ask(question == "Orb - The Orb's Adventures Beyond the Ultraworld" && answer == GeneralAnswer.Orb.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TFSoLAMore);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TFSoLADrugs);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TFSoLADrums);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "The Future Sound of London - Accelerator", options);
+    insert (ask);
+end
+
+rule "Venetian Snares - Rossz Csillag Alatt Szuletett"
+    when
+    Ask(question == "Machinedrum - Room(s)" && answer == GeneralAnswer.MR.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.VSRCAS);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Venetian Snares - Rossz Csillag Alatt Szuletett", options);
+    insert (ask);
+end
+
+rule "Kashiwa Daisuke - Program Music2"
+    when
+    Ask(question == "Venetian Snares - Rossz Csillag Alatt Szuletett" && answer == GeneralAnswer.VSRCAS.getFullName())
+    then
+	recommended(frame, kcontext.getKieRuntime(), "Kashiwa Daisuke - Program Music");
+end
+
+rule "Goldie - Timeless"
+    when
+    Ask(question == "The Future Sound of London - Accelerator" && answer == GeneralAnswer.TFSoLADrums.getFullName()) ||
+    Ask(question == "Shpongle - Are you Shpongled?" && answer == GeneralAnswer.SpongleDrums.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.Goldie);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Goldie - Timeless", options);
+    insert (ask);
+end
+
+rule "Sasha & John Digweed"
+    when
+    Ask(question == "Goldie - Timeless" && answer == GeneralAnswer.Goldie.getFullName()) ||
+    Ask(question == "Shpongle - Are you Shpongled?" && answer == GeneralAnswer.SpongleFrozen.getFullName()) ||
+    Ask(question == "Daft Punk - Discovery" && answer == GeneralAnswer.DPDCareless.getFullName()) ||
+    Ask(question == "Shpongle - Are you Shpongled?" && answer == GeneralAnswer.SpongleLike.getFullName())
+    then
+	recommended(frame, kcontext.getKieRuntime(), "Sasha & John Digweed");
+end
+
+rule "Justice - Cross"
+    when
+    Ask(question == "Daft Punk - Discovery" && answer == GeneralAnswer.DPDDirtier.getFullName())
+    then
+	recommended(frame, kcontext.getKieRuntime(), "Justice - Cross");
+end
+
+
+rule "Daft Punk - Discovery"
+    when
+    Ask(question == "Jon Hopkins - Immunity" && answer == GeneralAnswer.JHIBeats.getFullName()) ||
+    Ask(question == "Orbital - Brown Album" && answer == GeneralAnswer.OBALikeDance.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.DPDFun);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.DPDDirtier);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.DPDCareless);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.DPDDance);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Daft Punk - Discovery", options);
+    insert (ask);
+end
+
+rule "Shpongle - Are you Shpongled?"
+    when
+    Ask(question == "The Future Sound of London - Accelerator" && answer == GeneralAnswer.TFSoLADrugs.getFullName()) ||
+    Ask(question == "Daft Punk - Discovery" && answer == GeneralAnswer.DPDFun.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.SpongleLike);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.SpongleFrozen);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.SpongleDrums);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Shpongle - Are you Shpongled?", options);
+    insert (ask);
+end
+
+rule "Machinedrum - Room(s)"
+    when
+    Ask(question == "Lone - Galaxy Garden" && answer == GeneralAnswer.LGGLove.getFullName()) ||
+    Ask(question == "Aphex Twin - Drukqs" && answer == GeneralAnswer.APDWilder.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.MR);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Machinedrum - Room(s)", options);
+    insert (ask);
+end
+
+rule "Massive Attack - Mezzanine"
+    when
+    Ask(question == "Burial - Untrue" && answer == GeneralAnswer.BUDark.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.MAM);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Massive Attack - Mezzanine", options);
+    insert (ask);
+end
+
+rule "The Avalanches - Since I Left You"
+    when
+    Ask(question == "Girl Talk - Feed the Animals" && answer == GeneralAnswer.GTalk.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.TAvalanchesDarker);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.TAvalanchesSampling);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "The Avalanches - Since I Left You", options);
+    insert (ask);
+end
+
+rule "DJ Shadow - Endtroducing..."
+    when
+    Ask(question == "The Avalanches - Since I Left You" && answer == GeneralAnswer.TAvalanchesSampling.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.DSE);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "DJ Shadow - Endtroducing...", options);
+    insert (ask);
+end
+
+rule "Helios - Eingya"
+    when
+    Ask(question == "Jon Hopkins - Immunity" && answer == GeneralAnswer.JHIPiano.getFullName())
+    then
+	recommended(frame, kcontext.getKieRuntime(), "Helios - Eingya");
+end
+
+rule "Jon Hopkins - Immunity"
+    when
+    Ask(question == "Orbital - Brown Album" && answer == GeneralAnswer.OBAMix.getFullName()) ||
+    Ask(question == "Brian Eno - Ambient 2: The Plateaux of Mirror" && answer == GeneralAnswer.BEnoMix.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.JHIBeats);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.JHIPiano);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Jon Hopkins - Immunity", options);
+    insert (ask);
+end
+
+rule "Orbital - Brown Album"
+    when
+    Ask(question == "Daft Punk - Discovery" && answer == GeneralAnswer.DPDDance.getFullName())
+    then
+    ArrayList<String> options = new ArrayList<>();
+    Answer a = new Answer();
+    a.setAnswer(GeneralAnswer.OBALike);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.OBALikeDance);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.OBAMix);
+    options.add(a.getAnswer().getFullName());
+    a.setAnswer(GeneralAnswer.OBALess);
+    options.add(a.getAnswer().getFullName());
+    Ask ask = askAndAnswer(frame, kcontext.getKieRuntime(), "Orbital - Brown Album", options);
+    insert (ask);
+end
+
+rule "Stop"
+	when 
+	Ask(answer == "Stop")
+	then
+	recommended(frame, kcontext.getKieRuntime(), "End of program without recommendation for you");
+end
+
+declare Ask
+	question : String
+	answer : String
+end
+
+function void recommended(JFrame frame, KieRuntime krt, String recommendation) {
+    JOptionPane.showMessageDialog(frame, recommendation, "Recommendation for you", JOptionPane.PLAIN_MESSAGE);
+}
+
+function Ask askAndAnswer(JFrame frame, KieRuntime krt, String question, ArrayList answers) {
+
+    class Listener implements ItemListener {
+        private Ask ask;
+        private String chosen;
+        public Listener(Ask ans, String selected) {
+            this.ask = ans;
+            this.chosen = selected;
+        }
+
+        @Override
+        public void itemStateChanged(ItemEvent event) {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                ask.setAnswer(chosen);
+            }
+        }
+    }
+    Ask ask = new Ask(question, (String) answers.get(0));
+
+    final JPanel panel = new JPanel(new GridLayout(0, 1));
+    panel.add(new JLabel(question));
+
+    ArrayList < JRadioButton > ButtonList = new ArrayList < > ();
+
+    for (int i = 0; i < answers.size(); i++) {
+        String text = (String) answers.get(i);
+        JRadioButton newButton = new JRadioButton(text);
+        Listener newListner = new Listener(ask, text);
+        newButton.addItemListener(newListner);
+        ButtonList.add(newButton);
+    }
+
+    ButtonList.get(0).setSelected(true);
+    ask.setAnswer((String) answers.get(0));
+	
+    ButtonGroup group = new ButtonGroup();
+    for (int i = 0; i < ButtonList.size(); i++) {
+        group.add(ButtonList.get(i));
+        panel.add(ButtonList.get(i));
+    }
+
+	if (JOptionPane.showConfirmDialog(frame, panel, "Question", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE) ==-1)
+	{
+		ask.setAnswer("Stop");
+	}
+	
+    return ask;
+}
